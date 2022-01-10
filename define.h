@@ -106,20 +106,13 @@
 #define		PlacaGravador_7		0x12
 
 ////////////////// Reles /////////////////////////
-#define		SobeGaveta			0x01
-#define		LigaTrava			0x02
-#define		SobeTampa			0x04
+#define		SobeGaveta                      0x01
+#define		LigaTrava                       0x02
+#define		SobeTampa                       0x04
 #define     RL_Comut_CargaBateria_Placa1    0x04
 #define     RL_Comut_CargaBateria_Placa2    0x20
 
-///////////////////// AD ////////////////////////
-//Placa AD 2
-#define AD_GravacaoOK_Placa1    0x01 // Sinalização de gravação OK da placa 1 pelo Raspberry
-#define AD_GravacaoNOK_Placa1   0x02 // Sinalização de gravação NOK da placa 1 pelo Raspberry
-#define AD_Gravando_Placa1      0x03 // Sinalização de gravação em andamento da placa 1 pelo Raspberry
-#define AD_GravacaoOK_Placa2    0x04 // Sinalização de gravação OK da placa 2 pelo Raspberry
-#define AD_GravacaoNOK_Placa2   0x05 // Sinalização de gravação NOK da placa 2 pelo Raspberry       
-#define AD_Gravando_Placa2      0x06 // Sinalização de gravação em andamento da placa 2 pelo Raspberry
+#define RL_Aciona_Gravadores    0x40 //Relé em NF da placa 0
 
 /********************************** Placa Conversor A/D ******************************************
 A = Placa conversor AD
@@ -416,6 +409,12 @@ G = Placa gravador
 #define	Msg_os_defeitos_correspondentes 60  
 #define Msg_chave_inicio                61 
 #define MsgBugGravacao                  62
+#define MsgExecutandoTestes             63
+#define Msg_ValidandoPlacas             64
+#define Msg_ValidandoGravacao           65
+#define Msg_Validandoteste              66
+#define MsgFalhaGravacaoFinalPlaca1     67
+#define MsgFalhaGravacaoFinalPlaca2     68
 #define	MsgRele0Ausente                 100	//		"Placa RELE 0 ausente    ",	// 100
 #define	MsgRele1Ausente                 101	//		"Placa RELE 1 ausente    ",	// 101
 #define	MsgRele2Ausente                 102	//		"Placa RELE 2 ausente    ",	// 102
@@ -435,21 +434,18 @@ G = Placa gravador
 #define	MsgGravador5Ausente             116	//		"Placa gravador 5 ausente", // 116
 #define	MsgGravador6Ausente             117	//		"Placa gravador 6 ausente", // 117
 #define	MsgGravador7Ausente             118	//		"Placa gravador 7 ausente", // 118
-#define	MsgEmTeste                      119	//		
-#define	MsgTesteOK                      120	//		
-#define	MsgTesteErro                    121	//		"        ||ERRO||        "	// 132
-#define	MsgTesteAbortado                122	//		"   GRAVANDO SW TESTE    ", // 134
-#define MsgGravacaoOK1                  123 //      
+#define	MsgEmTeste                      119			
+#define	MsgTesteOK                      120			
+#define	MsgTesteErro                    121		
+#define	MsgTesteAbortado                122		
+#define MsgGravacaoOK1                  123      
 #define MsgGravacaoOK2                  124
-#define	MsgFIMDEMAC1                    125
-#define	MsgFIMDEMAC2                    126
-#define	MsgLIBERAJIGA1                  127
-#define	MsgLIBERAJIGA2                  128
-#define MsgListaMacRenovada             129
-#define MsgMACGravado                   130
-#define MsgEnterIniciar                 131
-#define MsgImportantelinha3             132
-
+#define MsgEnterIniciar                 125
+#define MsgImportantelinha3             126
+#define MsgTempoEsgotado                127
+#define MsgRepitaoTeste                 128
+#define MsgFavorAguarde                 129
+#define MsgPressioneInicio              130
 //==================================================================================
 //						Referente à Flash
 //==================================================================================

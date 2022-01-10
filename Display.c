@@ -170,4 +170,3 @@ void ExibeContador(void)
 	
 	BusSendMessage(PlacaDisplay,D_ShowMessage,26);
 }
-

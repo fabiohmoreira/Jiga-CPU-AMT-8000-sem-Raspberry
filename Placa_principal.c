@@ -9,7 +9,6 @@
 /*                                                                  */
 /* Função:  														*/
 /*          		                                             	*/
-/*                                                                  */
 /********************************************************************/
 
 #define x
@@ -19,7 +18,7 @@
 
 _CONFIG2(	IESO_ON &
 			FNOSC_PRIPLL &
-			/*FCKSM_CSDCM & */FCKSM_CSECME &
+			FCKSM_CSECME &
 			OSCIOFNC_OFF &
 			IOL1WAY_OFF &
 			I2C1SEL_PRI &
@@ -27,22 +26,25 @@ _CONFIG2(	IESO_ON &
 		);
 
 _CONFIG1(	JTAGEN_OFF &
-			GCP_ON &	//rever deve ser ON
+			GCP_ON &	
 			GWRP_OFF &
-			BKBUG_OFF & // rever
-			ICS_PGx3 &//            EMUC/EMUD share PGC3/PGD3
-			FWDTEN_ON &
+			BKBUG_OFF & 
+			ICS_PGx3 &
+			FWDTEN_OFF & // Função que inicia o Whatdog, nesse caso está desligado o mesmo
 			WINDIS_OFF & 
-			FWPSA_PR128 &
-			WDTPS_PS2048
+			FWPSA_PR128 //&
+			//WDTPS_PS2048 // Preset do WhatDog
 		);
 			
+
+//void ClrWdtimer(){
+//    __asm__("CLRWDT");
+//}
 
 /***********************************************************************/
 /* -------------------------- main function ---------------------------*/
 int main(void)
 {
-	char temp;
 	CLKDIV=0;
 	TRISA=TRISA_init;
 	TRISB=TRISB_init;
@@ -51,7 +53,7 @@ int main(void)
 	LATA=0x00;
 	LATB=0x00;
 	LATC=0x00;
-
+    
 //////////////////interrupção pelo timer 5 (1 ms)/////////////////
 	T5CON = 0x0000;             // Timer5 off
 	T5CONbits.TCKPS = 0;      	//
@@ -96,14 +98,24 @@ int main(void)
     StatusGr[0] = 0;
     StatusGr[1] = 0;
     LimpaDisplay();
-	
+    
+    ExibeContador();
+  
+//    Counter = RCON;
+//    
+//    ExibeContador();
+//    if (RCON != 131){
+//        while (1);
+//    }
+        	
 	while(1)
 	{
-		ClrWdt();
+		//ClrWdtimer();
 		RotinaDeTeste();			// Rotina de teste específica para cada produto
-        if (!((Count >= 11) && (StatusGr != 0)))  //DURANTE A GRAVAÇÃO NÃO FAZ TESTE DE COMUNICAÇÃO COM NENHUMA PLACA DE JIGA QUE ESTÁ PRESENTE NO SISTEMA
+        if (!((Count >= 11) && (StatusGr != 0))){  //DURANTE A GRAVAÇÃO NÃO FAZ TESTE DE COMUNICAÇÃO COM NENHUMA PLACA DE JIGA QUE ESTÁ PRESENTE NO SISTEMA
             VerifyPresentBusDevices();	// Verifica se todos os dispositivos selecionados estão presentes
-		VerificaTeclas();			// Verifica se alguma tecla foi pressionada na placa display e toma a ação correspondente
+		}
+        VerificaTeclas();			// Verifica se alguma tecla foi pressionada na placa display e toma a ação correspondente
 		ShowErrorMessages();		// exibe sequencialmente as mensagens de Erro geradas
 		IniciaTeste();	
         ResultTimeout();            // Volta a jiga à condição inicial após xx segundos do fim do teste				

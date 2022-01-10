@@ -18,12 +18,12 @@
 const __attribute__((space(auto_psv)))
 unsigned char PresentDevices[19]=
 {	
-	0,	// Placa RELE 0 presente
-	0,	// Placa RELE 1 presente
+	1,	// Placa RELE 0 presente
+	1,	// Placa RELE 1 presente
 	0,	// Placa RELE 2 presente
-	0,	// Placa RELE 3 presente	//( Obs. A Placa RELE 3 sempre deve estar presente em Jigas que utilizam sistema pneumático )
-	0,	// Placa A/D 0 presente 
-	0,	// Placa A/D 1 presente
+	1,	// Placa RELE 3 presente	//( Obs. A Placa RELE 3 sempre deve estar presente em Jigas que utilizam sistema pneumático )
+	1,	// Placa A/D 0 presente 
+	1,	// Placa A/D 1 presente
 	0,	// Placa A/D 2 presente
 	0,	// Placa A/D 3 presente
 	0,	// Placa telefonia presente

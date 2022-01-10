@@ -93,10 +93,6 @@ void BUS_Proc(void)
 			case 5:
 				if(addr_slave!=broadcast)		// se não foi broadcast seta para recepção
 				{
-/*					U1STAbits.OERR=0;
-					if(U1STAbits.URXDA)	
-						addr_recieved=U1RXREG;		// somente para limpar buffer de recepção
-					else*/
 					{
 						U1STAbits.UTXEN = FALSE;	// desabilita  transmissão
 						RS485_DIR=false;			// Acerta direção para recepção
