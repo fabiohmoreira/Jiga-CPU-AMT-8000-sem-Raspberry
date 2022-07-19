@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <executable name="dist/default/production/Jiga_AMT_8000_V2_5.X.production.elf">
+    <memory name="data">
+      <units>bytes</units>
+      <length>8192</length>
+      <used>624</used>
+      <free>7568</free>
+    </memory>
+    <memory name="program">
+      <units>bytes</units>
+      <length>49914</length>
+      <used>20145</used>
+      <free>29769</free>
+    </memory>
+  </executable>
+</project>
