@@ -9,16 +9,23 @@ void VerificaTeclas(void)
 	{
 		LeTeclasDelay=1;
 		TeclaPressionada=EstadoTeclas();
+           
+        if ((EmTeste==0)&&(FinalizaTesteFlag==0))
+        {
+            SendTextMessage(2, 0, MsgEnterIniciar);
+            ExibeContador(); 
+            SendProductName();
+        }    
         
-        if ((!EmTeste)&&(!FinalizaTesteFlag)&&(!Counter))
+        if ((EmTeste==0)&&(FinalizaTesteFlag==0)&&(Counter==0))
         {
             SendTextMessage(2, 0, MsgEnterIniciar);
             SendTextMessage(3, 0, MsgImportantelinha3);
             SendProductName();
             ExibeContador(); 
         }
-
-        if(((TeclaPressionada & 0x01)==0)&&(!EmTeste))   //Chave NF
+        
+        if(((TeclaPressionada & 0x01)==0)&&(EmTeste==0))   //Chave NF
         {
 			IniciaTesteFlag=1;
             TimeoutFimTeste = 0;
@@ -26,16 +33,21 @@ void VerificaTeclas(void)
         }
 		if((TeclaPressionada & 0x02)==0)  //Chave NF
 		{
-			if(EmTeste)
-			{
-                    FinalizaTesteFlag=1;
-                    IniciaTesteFlag=0;
-                    ResultTimeoutFlag=2; // Para não mostrar nem a mensagem Erro e nem Teste OK ao resetar durante o Teste
-                    SendTextMessage(4, 0, MsgTesteAbortado);
-			}
-			else
-			{
-				LimpaDisplay();
+			if(EmTeste==1) {
+                LimpaDisplay();
+                StatusGrava = 0;
+                FinalizaTesteFlag=1;
+                IniciaTesteFlag=0;
+                ResultTimeoutFlag=2; // Para não mostrar nem a mensagem Erro e nem Teste OK ao resetar durante o Teste
+                SendTextMessage(4, 0, MsgTesteAbortado);
+                Delay_ms(500);
+                SendTextMessage(4, 0, MsgEmBranco);
+       		}
+			else {
+	            SendTextMessage(2, 0, MsgEmBranco);
+                SendTextMessage(3, 0, MsgTesteAbortado);
+                Delay_ms(500);
+                LimpaDisplay();
 				for(Count=0;Count<64;Count++)
 					MsgToShowBuffer[Count]=0;
                     MsgToShowPtr_RD=0;
@@ -45,9 +57,10 @@ void VerificaTeclas(void)
 					bus_fail_counter[Count]=0;
                                 
                 DesligaReles(PlacaRele_0);
-				SendProductName();
+                DesligaReles(PlacaRele_1);
+                SendProductName();
                 ExibeContador(); 
-			}
+            }
 		} 
 	}
  }
@@ -55,11 +68,14 @@ void VerificaTeclas(void)
 void IniciaTeste(void)
 {
 	int Count;
-	if((IniciaTesteFlag)&&(IniciaTesteDelay==0))
+	if((IniciaTesteFlag==1)&&(IniciaTesteDelay==0))
 	switch(IniciaTesteState)
 	{
 		case 0:
 			LimpaDisplay();
+            SendTextMessage(2, 0, MsgInicializandoPlacas);
+            SendTextMessage(3, 0, MsgEmBranco);
+            SendTextMessage(4, 0, MsgEmBranco);
 			for(Count=0;Count<64;Count++)
 				MsgToShowBuffer[Count]=0;
                 MsgToShowPtr_RD=0;
@@ -67,21 +83,21 @@ void IniciaTeste(void)
 		
 			for(Count=0;Count<12;Count++)
 				bus_fail_counter[Count]=0;
-			
-            SendProductName();
+                
             EmiteBipe(5,2);
-            ExibeContador(); 
-			DesligaReles(PlacaRele_0);
+            SendProductName();
+            ExibeContador();                   
+            DesligaReles(PlacaRele_0);
             DesligaReles(PlacaRele_1);
-			AlteraEstadoReles(PlacaRele_3,LigaTrava, LigaTrava);		// liga trava da Jiga                   
+			AlteraEstadoReles(PlacaRele_3,LigaTrava, LigaTrava);		                
 			IniciaTesteDelay=500;
 			IniciaTesteState++;
 		break;
         
 		case 1:
-            AlteraEstadoReles(PlacaRele_0, RL_Comut_CargaBateria_Placa1, 0);		//Desliga carga na bateria
-            AlteraEstadoReles(PlacaRele_0, RL_Comut_CargaBateria_Placa2, 0);		//Desliga carga na bateria
-			AlteraEstadoReles(PlacaRele_3,SobeGaveta, SobeGaveta);		// Sobe a gaveta
+            AlteraEstadoReles(PlacaRele_0, RL_Comut_CargaBateria_Placa1, 0);		
+            AlteraEstadoReles(PlacaRele_0, RL_Comut_CargaBateria_Placa2, 0);		
+			AlteraEstadoReles(PlacaRele_3,SobeGaveta, SobeGaveta);		
 			IniciaTesteDelay=500;
 			IniciaTesteState++;
 		break;
@@ -92,6 +108,7 @@ void IniciaTeste(void)
 			TesteOK=0;
 			EstagioTeste=0;
 			TestDelay=0;
+            TimeOutDelay=0;
 			EmTeste=1;
 			IniciaTesteFlag=0;
 			IniciaTesteState=0;
@@ -100,6 +117,7 @@ void IniciaTeste(void)
 		default:
 			EstagioTeste=0;
 			TestDelay=0;
+            TimeOutDelay=0;
 			EmTeste=0;
 			IniciaTesteFlag=0;
 			IniciaTesteState=0;
@@ -109,7 +127,7 @@ void IniciaTeste(void)
 
 void FinalizaTeste(void)
 {
-	if((FinalizaTesteFlag)&&(FinalizaTesteDelay==0))
+	if((FinalizaTesteFlag==1)&&(FinalizaTesteDelay==0))
 	switch(FinalizaTesteState)
 	{
 		case 0:
@@ -117,14 +135,11 @@ void FinalizaTeste(void)
 			EstagioTeste=0;
 			IniciaTesteState=0;
 			EmTeste=0;
-            ExibeContador(); 
-            SendProductName();
-            
-            if(TesteOK)
+
+            if(TesteOK==1)
                 {
-                    MostraResultado();
-                    DesligaReles(PlacaRele_0);
-                    SendTextMessage(4, 0, MsgEnterIniciar);
+                    ExibeContador(); 
+                    SendProductName();
                 }
                 else
                 {
@@ -132,25 +147,28 @@ void FinalizaTeste(void)
                     SendTextMessage(1, 0, MsgTesteErro);
                 }
             
-			AlteraEstadoReles(PlacaRele_3,SobeGaveta, 0x00);		// Desce a gaveta
-			FinalizaTesteDelay=300;
+			AlteraEstadoReles(PlacaRele_3,SobeGaveta, 0);
+			FinalizaTesteDelay=200;
 			FinalizaTesteState++;
+            DesligaReles(PlacaRele_0);             
+            DesligaReles(PlacaRele_1);   
+            DesligaReles(PlacaRele_2); 
 		break;
         
 		case 1:
-			AlteraEstadoReles(PlacaRele_3,LigaTrava, 0x00);		// Desliga trava da Jiga
-			FinalizaTesteDelay=300;
+			AlteraEstadoReles(PlacaRele_3,LigaTrava, 0);
+			FinalizaTesteDelay=200;
 			FinalizaTesteState++;		
 		break;
         
 		case 2:
-			AlteraEstadoReles(PlacaRele_3,SobeTampa, SobeTampa);		// Liga pistão para subir a tampa
-			FinalizaTesteDelay=300;
+			AlteraEstadoReles(PlacaRele_3,SobeTampa, SobeTampa);
+			FinalizaTesteDelay=200;
 			FinalizaTesteState++;		
 		break;
         
 		case 3:
-			AlteraEstadoReles(PlacaRele_3,SobeTampa, 0x00);		// Desliga pistão para subir a tampa
+			AlteraEstadoReles(PlacaRele_3,SobeTampa, 0);
 			FinalizaTesteState++;		
 		break;
         
@@ -185,9 +203,11 @@ void ResultTimeout(void)
         for(Count=0;Count<=19;Count++)
             bus_fail_counter[Count]=0;
 
-        SendProductName();
         DesligaReles(PlacaRele_0);             
-        DesligaReles(PlacaRele_1);    
+        DesligaReles(PlacaRele_1);   
+        DesligaReles(PlacaRele_2); 
+        DesligaReles(PlacaRele_3);   
         ExibeContador(); 
+        SendProductName();
     }
 }

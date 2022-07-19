@@ -19,6 +19,8 @@
 #include "DispositivosPresentes.h"
 int RecieveTimeout;
 
+#define TIMEOUT_RX 100
+
 void BUS_Proc(void)
 {
 	if(!full_recieved)
@@ -93,21 +95,17 @@ void BUS_Proc(void)
 			case 5:
 				if(addr_slave!=broadcast)		// se não foi broadcast seta para recepção
 				{
-/*					U1STAbits.OERR=0;
-					if(U1STAbits.URXDA)	
-						addr_recieved=U1RXREG;		// somente para limpar buffer de recepção
-					else*/
 					{
 						U1STAbits.UTXEN = FALSE;	// desabilita  transmissão
 						RS485_DIR=false;			// Acerta direção para recepção
 						send_msg_state++;
-						BUS_timeout=20;			// timeout da recepção
+						BUS_timeout=TIMEOUT_RX;			// timeout da recepção
 					}
 				}
 				else
 				{
 					send_msg_state++;
-					BUS_timeout=20;			// timeout da recepção
+					BUS_timeout=TIMEOUT_RX;			// timeout da recepção
 				}
 			break;
 			case 6:
@@ -115,7 +113,7 @@ void BUS_Proc(void)
 				{
 					if((U1STAbits.URXDA)&&(!U1STAbits.OERR))			// se recebeu um byte
 					{
-						BUS_timeout=10;			// timeout da recepção
+						BUS_timeout=TIMEOUT_RX;			// timeout da recepção
 						if(tx_count==0)
 						{	
 							board_type_recieved=U1RXREG;
@@ -270,7 +268,7 @@ void VerifyPresentBusDevices(void)
         VerifyPresentBusDevicesFlag = 1;
         if (PresentDevices[Count] != 0) 
         {
-            if (!(((Count >= 11)&&(Count <= 18)) && (StatusGr != 0))) 
+            if (!(((Count >= 11)&&(Count <= 18)) && (StatusGrava != 0))) 
             {
                 BusSendMessage(Count, PlacaPresente, 0);   
 			if(BUS_ACK)

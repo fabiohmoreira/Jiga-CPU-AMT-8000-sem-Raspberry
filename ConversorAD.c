@@ -65,16 +65,26 @@ void SetAverageVoltage(char Placa, char Channel,int Value)
 /************************************************************************/
 int ADReadVoltage(char Placa, char Channel)
 {
-	bus_tx_buffer[0]=Channel;
-	BusSendMessage(Placa,A_ReadVoltage,1);
-	if((BUS_ACK)&&(rx_count==2))
-	{
-		return((bus_rx_buffer[0]<<8)|bus_rx_buffer[1]);
-	}
-	else
-	{
-		return(0xFFFF);
-	}
+    unsigned int media ,valortotal = 0;
+    int i = 0;
+   
+    for(i = 0; i < 10; i++){
+    
+        bus_tx_buffer[0]=Channel;
+        BusSendMessage(Placa,A_ReadVoltage,1);
+        if((BUS_ACK)&&(rx_count==2))
+        {
+            valortotal += ((bus_rx_buffer[0]<<8)|bus_rx_buffer[1]);
+        }
+        else
+        {
+            valortotal += (0xFFFF);
+        }
+    }
+    
+    media = valortotal/10;
+    
+    return media;
 }
 /************************************************************************/
 /*	int ADReadPeriod(char Placa, char Channel)							*/

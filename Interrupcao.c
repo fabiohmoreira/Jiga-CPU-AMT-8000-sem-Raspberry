@@ -12,8 +12,6 @@ void Delay_ms(int time)
 
 void __attribute__((__interrupt__, auto_psv)) _T5Interrupt( void )		//interrupução 1ms
 {
-	
-//LED_LD1^=1;
 	Count5ms++;
 	if(Count5ms>=5)
 	{
@@ -81,7 +79,7 @@ void __attribute__((__interrupt__, auto_psv)) _T5Interrupt( void )		//interrupuç
         TimeoutFimTeste--;
         if(TimeoutFimTeste == 0)
         {
-            ResultTimeoutFlag = 1; //Flag da função ResultTimeout 
+            ResultTimeoutFlag = 0; //Flag da função ResultTimeout 
         }
     }
 	

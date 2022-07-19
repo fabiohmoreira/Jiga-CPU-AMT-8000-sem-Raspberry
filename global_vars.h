@@ -31,6 +31,8 @@ Global unsigned char time_adc;
 Global unsigned char temp;
 Global unsigned char chaves_old;
 Global unsigned int StatusGr[8];
+Global unsigned int StatusGrava;
+Global unsigned char Exibeerro;
 
 Global unsigned int BUS_timeout;
 Global unsigned int loop_query;
@@ -56,13 +58,7 @@ Global union
 	struct
 	{
 		unsigned	_query	: 1;	// BIP ligado
-//		unsigned	_bus	: 1;	//
-//		unsigned		: 1;	//
-//		unsigned		: 1;	//
-//		unsigned		: 1;	//
-//		unsigned		: 1;	//
-//		unsigned		: 1;	//
-		unsigned		: 7;	//
+		unsigned            : 7;	//
 	};
 }_flags;
 #define status_flag		_flags.as_byte
@@ -111,9 +107,12 @@ Global unsigned int TemErro;
 Global unsigned int TimeOutDelay;	// contador para decrementar o tempo entre um teste e outro
 Global unsigned int TimeOutGrava;	// contador para decrementar o tempo entre um teste e outro
 Global unsigned int ContadorErro;	// contador para decrementar o tempo entre um teste e outro
-//int Messages[3];
 
 ///////////////// Apoio ao teste //////////////////
+
+#define	ApoioFlags			_ApoioFlags.as_int
+#define	OnOffRelayFlag		_ApoioFlags._OnOffRelayFlag
+#define	OffOnRelayFlag		_ApoioFlags._OffOnRelayFlag
 
 Global union
 {
@@ -122,12 +121,9 @@ Global union
 	{
 		unsigned	_OnOffRelayFlag	: 1;	// função para ligar e desligar um reles está em execução
 		unsigned	_OffOnRelayFlag	: 1;	// função para desligar e ligar um reles está em execução
-	}
+	};
 }_ApoioFlags;
 
-#define	ApoioFlags			_ApoioFlags.as_int
-#define	OnOffRelayFlag		_ApoioFlags._OnOffRelayFlag
-#define	OffOnRelayFlag		_ApoioFlags._OffOnRelayFlag
 #define UNUSED(x) ((void)(x))
 
 Global unsigned int OnOffRelay_msDelay;
@@ -135,5 +131,4 @@ Global unsigned int OffOnRelay_msDelay;
 Global unsigned int Count;
 Global unsigned int Counter;               //Variável Contadora OK
 Global unsigned int Counter_Nok;            //Variável Contadora Não 
-
 
